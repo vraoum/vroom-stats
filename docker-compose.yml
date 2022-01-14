@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  webapp:
+    ports: 
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: ./docker/webapp/Dockerfile
+    restart: always
+    volumes:
+      - .:/webapp
