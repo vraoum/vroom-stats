@@ -1,8 +1,9 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32120.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VroomStats", "src\VroomStats\VroomStats.csproj", "{62303D65-1A48-457D-A62A-5F5B737B5BB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VroomStats", "src\VroomStats\VroomStats.csproj", "{191FA648-52B1-486A-802F-9C90639D40F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,12 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{62303D65-1A48-457D-A62A-5F5B737B5BB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62303D65-1A48-457D-A62A-5F5B737B5BB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62303D65-1A48-457D-A62A-5F5B737B5BB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62303D65-1A48-457D-A62A-5F5B737B5BB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{191FA648-52B1-486A-802F-9C90639D40F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{191FA648-52B1-486A-802F-9C90639D40F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{191FA648-52B1-486A-802F-9C90639D40F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{191FA648-52B1-486A-802F-9C90639D40F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E543F141-1460-48C1-BE23-A589BACF0A56}
 	EndGlobalSection
 EndGlobal
