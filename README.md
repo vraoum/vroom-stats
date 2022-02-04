@@ -43,6 +43,14 @@ WebSocket connection to a specific car:
 
 The different values gathered are stored in a MongoDB server.
 
+### Web App
+
+The web App, made with React, will consist of some pages, one with a list of all the registered cars, and then a complete summary of each car, with history and real-time data automatically updating the webpage.
+
+### Raspberry Pi App
+
+The app that will run on Raspberry, made with .NET 6, will allow us to easily interact with the stream of data received from the OBD and automatically send everything to the remote web API.
+
 ### LTE Module
 
 To send the information from the Raspberry to the Webserver, we will use a WIFI to easily connect to the internet.
