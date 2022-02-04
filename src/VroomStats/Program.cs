@@ -9,6 +9,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IWsHandlerService, WsHandlerService>();
 builder.Services.AddSingleton(_ => new MongoClient($"mongodb://{builder.Configuration["Database:Host"] ?? "local-mongo"}:{builder.Configuration["Database:Port"] ?? "27017"}"));
+builder.Services.AddSingleton(x => x.GetRequiredService<MongoClient>().GetDatabase("vroom-stats"));
 builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
 
 var app = builder.Build();

@@ -1,3 +1,3 @@
 ﻿namespace VroomStats.Payloads;
 
-public record BasePayload(OpCode OpCode, Dictionary<string, object> Data);
+public record BasePayload(OpCode OpCode, Dictionary<string, string> Data);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VroomStats.Models;
+using VroomStats.Payloads;
 using VroomStats.Services;
 
 namespace VroomStats.Controllers;
@@ -47,6 +48,18 @@ public class CarsController : Controller
         }
 
         return BadRequest();
+    }
+    
+    /// <summary>
+    /// Registers a new car into the database.
+    /// </summary>
+    /// <param name="carId">Id of the car.</param>
+    /// <param name="carDataModel">Instance of a body model.</param>
+    [HttpPost("{carId}/data")]
+    public async Task<IActionResult> AppendDataAsync(string carId, CarDataAppendModel carDataModel)
+    {
+        await _database.AppendDataAsync(carId, new BasePayload(OpCode.Data, carDataModel.Data));
+        return NoContent();
     }
     
     /// <summary>
