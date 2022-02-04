@@ -6,6 +6,8 @@ This projet aims to retrieve car engine stats and store them in a webserver to a
 
 The project is divided in multiple parts: 
 
+![Project Diagram](./docs/diagram.svg)
+
 ### OBD Module
 
 It is a Super Mini ELM327 V2.1 that supports Bluetooth.
@@ -24,28 +26,53 @@ The webapp (.NET 6 Blazor) will consist of some webpages that summaries the stat
 
 To retrieve values from the car, there will be HTTP REST API Endpoints and also serve a Websocket server.
 
-The routes for the web API and the protocol used for the websocket part are still unknown.
+#### API Endpoints
 
-The different values gathered will be stored in a MongoDB server.
+Get the latest known values for a specific car:
+- GET /api/v1/cars/{carId} 
+
+Register a new car by its unique id:
+- POST /api/v1/cars/{carId}
+
+Append new values for a specific car:
+- POST /api/v1/cars/{carId}/data
+
+Get all the known registered cars:
+- GET /api/v1/cars
+
+WebSocket connection to a specific car:
+- ws://webhost:webport/api/v1/ws/{carId}
+
+The different values gathered are stored in a MongoDB server.
 
 ### LTE Module
 
-To send the information from the Raspberry to the Webserver, we will use an LTE 4G module that will allow us to easily connect to the internet.
+To send the information from the Raspberry to the Webserver, we will use a WIFI to easily connect to the internet.
 
 ## Requirements
 
-### Software
+### Softwares (With Docker)
+
+- Docker & Docker Compose
+
+### Softwares (Without Docker)
 
 - .NET 6 SDK
-- Docker & Docker Compose
+- NodeJs
+- ReactJs
 
 ### Hardware
 
-- Raspberry Pi 4
+- Raspberry Pi 4 (with Wifi and Bluetooth)
 - Super Mini ELM327
-- SIMCOM SIM7600G-H 4G LTE
 
 ## Resources 
 
 - [OBD.NET](https://github.com/DarthAffe/OBD.NET)
 - [OBD II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs)
+
+## Run
+
+> docker-compose up -d
+
+Then open your browser at the following address: https://localhost

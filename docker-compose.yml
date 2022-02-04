@@ -1,12 +1,27 @@
 version: '3.7'
 
+volumes:
+  webapi-volume:
+  db-volume:
+    driver: local
+
 services:
-  webapp:
+  webapi:
     ports: 
       - "8080:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
     build:
       context: .
-      dockerfile: ./docker/webapp/Dockerfile
+      dockerfile: ./docker/webapi/Dockerfile
     restart: always
     volumes:
-      - .:/webapp
+      - webapi-volume:/app
+
+  local-mongo:
+    image: mongo
+    ports:
+     - "27017:27017"
+    restart: always
+    volumes:
+     - db-volume:/data/db
