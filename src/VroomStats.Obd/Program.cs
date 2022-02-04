@@ -14,4 +14,5 @@ var builder = Host.CreateDefaultBuilder(args)
     });
 
 var app= builder.Build();
+await app.Services.GetRequiredService<ELM327>().InitializeAsync();
 app.Run();

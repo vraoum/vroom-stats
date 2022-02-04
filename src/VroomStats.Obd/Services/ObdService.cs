@@ -18,8 +18,6 @@ public class ObdService : BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await _device.InitializeAsync();
-        
         var fuelType = await _device.RequestDataAsync<FuelType>();
         var fuelStatus = await _device.RequestDataAsync<FuelSystemStatus>();
         
