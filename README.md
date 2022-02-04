@@ -51,7 +51,7 @@ The web App, made with React, will consist of some pages, one with a list of all
 
 The app that will run on Raspberry, made with .NET 6, will allow us to easily interact with the stream of data received from the OBD and automatically send everything to the remote web API.
 
-### LTE Module
+### Wifi Module
 
 To send the information from the Raspberry to the Webserver, we will use a WIFI to easily connect to the internet.
 
