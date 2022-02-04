@@ -10,11 +10,14 @@ namespace VroomStats.Services;
 public class WsHandlerService : IWsHandlerService
 {
     private readonly ILogger<WsHandlerService> _logger;
+    private readonly IDatabaseService _database;
+    
     private readonly ConcurrentDictionary<string, List<WebSocket>> _sessionsPerCar;
 
-    public WsHandlerService(ILogger<WsHandlerService> logger)
+    public WsHandlerService(ILogger<WsHandlerService> logger, IDatabaseService database)
     {
         _logger = logger;
+        _database = database;
         _sessionsPerCar = new ConcurrentDictionary<string, List<WebSocket>>();
     }
     
@@ -36,9 +39,7 @@ public class WsHandlerService : IWsHandlerService
                 _logger.LogDebug("Received WS payload {OpCode} with {Count} data", 
                     payload.OpCode, payload.Data.Count);
                 
-                // todo: insert into the MongoDB database.
-                
-                
+                await _database.AppendDataAsync(carId, payload);
                 await DispatchAsync(carId, webSocket, payload);
             }
             catch (Exception ex)
