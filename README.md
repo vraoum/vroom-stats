@@ -20,11 +20,9 @@ The Raspberry will allow us to:
 
 It will also use LEDs, or a screen, to show a few things we will eventually chose.
 
-### Web app
+### Web API
 
-The webapp (.NET 6 Blazor) will consist of some webpages that summaries the stats about the different cars that connected to our IOT system. 
-
-To retrieve values from the car, there will be HTTP REST API Endpoints and also serve a Websocket server.
+The web API (.NET 6) will consist of an API with Rest and WebSocket endpoints to append and retrieve data of a car by a webapp or the Raspberry Pi on a car.
 
 #### API Endpoints
 
