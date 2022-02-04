@@ -1,5 +1,10 @@
 version: '3.7'
 
+volumes:
+  webapp-volume:
+  db-volume:
+    driver: local
+
 services:
   webapp:
     ports: 
@@ -9,4 +14,12 @@ services:
       dockerfile: ./docker/webapp/Dockerfile
     restart: always
     volumes:
-      - .:/webapp
+      - webapp-volume:/webapp
+
+  local-mongo:
+    image: mongo
+    ports:
+     - "27017:27017"
+    restart: always
+    volumes:
+     - db-volume:/data/db

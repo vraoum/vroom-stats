@@ -38,9 +38,17 @@ public class WsHandlerService : IWsHandlerService
                 var payload = JsonSerializer.Deserialize<BasePayload>(content)!;
                 _logger.LogDebug("Received WS payload {OpCode} with {Count} data", 
                     payload.OpCode, payload.Data.Count);
+
+                if (payload.OpCode != OpCode.Data)
+                {
+                    (result, content) = await ReceiveUtf8StringAsync(webSocket);
+                    continue;
+                }
                 
                 await _database.AppendDataAsync(carId, payload);
                 await DispatchAsync(carId, webSocket, payload);
+                
+                (result, content) = await ReceiveUtf8StringAsync(webSocket);
             }
             catch (Exception ex)
             {
