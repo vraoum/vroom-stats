@@ -1,6 +1,6 @@
 # vroom-stats
 
-This projet aims to retrieve car engine stats and store them in a webserver to allow any user to know what happens in their car.
+This project aims to retrieve car engine stats and store them in a webserver to allow any user to know what happens in their car.
 
 ## Architecture
 
