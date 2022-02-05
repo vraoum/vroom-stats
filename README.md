@@ -75,6 +75,8 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 
 ## Resources 
 
+- [Windows COM Simulation](https://www.virtual-serial-port.org/)
+- [OBD Simulation](https://github.com/Ircama/ELM327-emulator)
 - [OBD.NET](https://github.com/DarthAffe/OBD.NET)
 - [OBD II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs)
 
