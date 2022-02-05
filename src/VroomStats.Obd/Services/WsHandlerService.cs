@@ -24,7 +24,7 @@ public class WsHandlerService : IWsHandlerService
     public async Task ConnectAsync(string carId)
     {
         await _webSocket.ConnectAsync(
-            new Uri($"ws://{_configuration["WebSocket:Host"]}:{_configuration["WebSocket:Port"]}/api/v1/ws/{carId}", UriKind.Absolute),
+            new Uri($"ws://{_configuration["WebApi:Host"]}:{_configuration["WebApi:Port"]}/api/v1/ws/{carId}"),
             CancellationToken.None);
 
         _ = ListenAsync();
