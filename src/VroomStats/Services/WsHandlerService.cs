@@ -2,6 +2,7 @@
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using VroomStats.Extensions;
 using VroomStats.Payloads;
 
 namespace VroomStats.Services;
@@ -30,7 +31,7 @@ public class WsHandlerService : IWsHandlerService
             webSocket.Abort();
         }
         
-        var (result, content) = await ReceiveUtf8StringAsync(webSocket).ConfigureAwait(false);
+        var (result, content) = await webSocket.ReceiveUtf8StringAsync().ConfigureAwait(false);
         while (!result.CloseStatus.HasValue)
         {
             try
@@ -41,14 +42,14 @@ public class WsHandlerService : IWsHandlerService
 
                 if (payload.OpCode != OpCode.Data)
                 {
-                    (result, content) = await ReceiveUtf8StringAsync(webSocket);
+                    (result, content) = await webSocket.ReceiveUtf8StringAsync();
                     continue;
                 }
                 
                 await _database.AppendDataAsync(carId, payload);
                 await DispatchAsync(carId, webSocket, payload);
                 
-                (result, content) = await ReceiveUtf8StringAsync(webSocket);
+                (result, content) = await webSocket.ReceiveUtf8StringAsync();
             }
             catch (Exception ex)
             {
@@ -118,32 +119,5 @@ public class WsHandlerService : IWsHandlerService
         }
         
         await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "CLOSE", CancellationToken.None);
-    }
-
-    /// <summary>
-    /// Receives an entire UTF8 string payload from the WebSocket.
-    /// </summary>
-    /// <param name="webSocket">Instance of the WebSocket connection.</param>
-    /// <returns>The last WebSocket result along with the payload.</returns>
-    private static async Task<(WebSocketReceiveResult, string)> ReceiveUtf8StringAsync(WebSocket webSocket)
-    {
-        var messageBuffer = Array.Empty<byte>();
-        var buffer = new byte[1024 * 4];
-
-        WebSocketReceiveResult result;
-        do
-        {
-            result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-            if (result.CloseStatus.HasValue)
-            {
-                return (result, null)!;
-            }
-
-            Array.Resize(ref messageBuffer, messageBuffer.Length + result.Count);
-            Array.Copy(buffer, 0, messageBuffer, messageBuffer.Length - result.Count, result.Count);
-        } while (!result.EndOfMessage);
-
-        return (result, Encoding.UTF8.GetString(messageBuffer));
     }
 }
