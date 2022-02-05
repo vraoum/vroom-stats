@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System.Globalization;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OBD.NET.Common.OBDData;
 using VroomStats.Payloads;
@@ -41,8 +42,8 @@ public class ObdService : BackgroundService
 
             await _ws.SendPayloadAsync(new BasePayload(OpCode.Data, new Dictionary<string, string>
             {
-                ["speed"] = speed.ToString(),
-                ["rpm"] = rpm.ToString()
+                ["speed"] = speed.Speed.Value.ToString(CultureInfo.InvariantCulture),
+                ["rpm"] = rpm.Rpm.Value.ToString(CultureInfo.InvariantCulture)
             }));
             
             // pull every 2000ms
