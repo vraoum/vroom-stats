@@ -1,7 +1,20 @@
 using MongoDB.Driver;
+using Serilog;
+using Serilog.Events;
 using VroomStats.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Console.WriteLine("Your mom is a fucking whore");
+
+var loggerTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+builder.Host.UseSerilog((x, y) => y
+    .MinimumLevel.Debug()
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .WriteTo.Conditional(
+        logEvent => x.HostingEnvironment.IsProduction(), 
+        logConfig => logConfig.File(@"./logs/", retainedFileCountLimit: 31, rollingInterval: RollingInterval.Day, outputTemplate: loggerTemplate))
+    .WriteTo.Console(outputTemplate: loggerTemplate));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

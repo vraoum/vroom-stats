@@ -42,18 +42,20 @@ public class WsHandlerService : IWsHandlerService
 
                 if (payload.OpCode != OpCode.Data)
                 {
-                    (result, content) = await webSocket.ReceiveUtf8StringAsync();
                     continue;
                 }
                 
                 await _database.AppendDataAsync(carId, payload);
                 await DispatchAsync(carId, webSocket, payload);
-                
-                (result, content) = await webSocket.ReceiveUtf8StringAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An exception occured when handling a WS payload");
+                _logger.LogDebug("Bad payload received:\n{Payload}", content);
+            }
+            finally
+            {
+                (result, content) = await webSocket.ReceiveUtf8StringAsync();
             }
         }
 
@@ -76,10 +78,18 @@ public class WsHandlerService : IWsHandlerService
 
         payload = new BasePayload(OpCode.Dispatch, payload.Data);
         
-        foreach (var session in sessions.Where(x => x != webSocket))
+        foreach (var session in sessions.Where(x => x != webSocket).ToList())
         {
-            await session.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload)),
-                WebSocketMessageType.Text, true, CancellationToken.None);
+            try
+            {
+                await session.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload)),
+                    WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An exception occured when trying to dispatch a message to a session. Removing it from cache");
+                sessions.Remove(session);
+            }
         }
     }
     

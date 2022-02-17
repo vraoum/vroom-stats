@@ -49,16 +49,19 @@ public class WsHandlerService : IWsHandlerService
 
                 if (payload.OpCode != OpCode.Event)
                 {
-                    (result, content) = await _webSocket.ReceiveUtf8StringAsync();
                     continue;
                 }
 
                 // todo: IoT things~
-                (result, content) = await _webSocket.ReceiveUtf8StringAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An exception occured when handling a WS payload");
+                _logger.LogDebug("Bad payload received:\n{Payload}", content);
+            }
+            finally
+            {
+                (result, content) = await _webSocket.ReceiveUtf8StringAsync();
             }
         }
     }
