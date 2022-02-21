@@ -14,8 +14,6 @@
 	<ItemGroup>
 		<PackageReference Include="Iot.Device.Bindings" Version="2.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-		<PackageReference Include="OBD.NET.Common" Version="1.2.0" />
-		<PackageReference Include="OBD.NET.Desktop" Version="1.2.0" />
 		<PackageReference Include="Serilog.Extensions.Hosting" Version="4.2.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
@@ -27,6 +25,15 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="OBD.NET.Common, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+	    <HintPath>..\..\libs\OBD.NET.Common.dll</HintPath>
+	  </Reference>
+	  <Reference Include="OBD.NET.Desktop, Version=1.2.0.0, Culture=neutral, PublicKeyToken=null">
+	    <HintPath>..\..\libs\OBD.NET.Desktop.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>
