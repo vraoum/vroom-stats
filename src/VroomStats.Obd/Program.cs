@@ -26,5 +26,4 @@ var builder = Host.CreateDefaultBuilder(args)
     });
 
 var app = builder.Build();
-app.Services.GetRequiredService<ExtendedElm327>().Initialize();
 app.Run();

@@ -21,10 +21,12 @@ public class ObdService : BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        TryConnectElm(5);
+        
         var vin = await _device.RequestVinAsync();
         _logger.LogInformation("Vehicle VIN: {Vin}", vin);
 
-        await _ws.ConnectAsync(vin.Vin);
+        await TryConnectWsAsync(5, vin.Vin);
 
         var fuelType = await _device.RequestDataAsync<FuelType>();
         var fuelStatus = await _device.RequestDataAsync<FuelSystemStatus>();
@@ -48,6 +50,56 @@ public class ObdService : BackgroundService
             
             // pull every 2000ms
             await Task.Delay(2000, stoppingToken);
+        }
+    }
+
+    private async Task TryConnectWsAsync(int count, string vin)
+    {
+        while (count > 0)
+        {
+            try
+            {
+                await Task.Delay(5000);
+                await _ws.ConnectAsync(vin);
+                break;
+            }
+            catch (Exception ex)
+            {
+                count--;
+                
+                if (count == 0)
+                {
+                    _logger.LogError(ex, "Unable to connect to remote WebSocket server. Exiting");
+                    throw;
+                }
+                
+                _logger.LogError(ex, "Unable to connect to remote WebSocket server. Retrying {Count} times", count);
+            }
+        }
+    }
+    
+    private void TryConnectElm(int count)
+    {
+        while (count > 0)
+        {
+            try
+            {
+                Thread.Sleep(5000);
+                _device.Initialize();
+                break;
+            }
+            catch (Exception ex)
+            {
+                count--;
+                
+                if (count == 0)
+                {
+                    _logger.LogError(ex, "Unable to initialize ELM327. Exiting");
+                    throw;
+                }
+                
+                _logger.LogError(ex, "Unable to initialize ELM327. Retrying {Count} times", count);
+            }
         }
     }
 }
