@@ -21,12 +21,18 @@ public class ObdService : BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        TryConnectElm(5);
+        if (!TryConnectElm(5))
+        {
+            return;
+        }
         
         var vin = await _device.RequestVinAsync();
         _logger.LogInformation("Vehicle VIN: {Vin}", vin);
 
-        await TryConnectWsAsync(5, vin.Vin);
+        if (!await TryConnectWsAsync(5, vin.Vin))
+        {
+            return;
+        }
 
         var fuelType = await _device.RequestDataAsync<FuelType>();
         var fuelStatus = await _device.RequestDataAsync<FuelSystemStatus>();
@@ -53,7 +59,7 @@ public class ObdService : BackgroundService
         }
     }
 
-    private async Task TryConnectWsAsync(int count, string vin)
+    private async Task<bool> TryConnectWsAsync(int count, string vin)
     {
         while (count > 0)
         {
@@ -70,15 +76,17 @@ public class ObdService : BackgroundService
                 if (count == 0)
                 {
                     _logger.LogError(ex, "Unable to connect to remote WebSocket server. Exiting");
-                    throw;
+                    return false;
                 }
                 
                 _logger.LogError("Unable to connect to remote WebSocket server. Retrying {Count} times", count);
             }
         }
+
+        return true;
     }
     
-    private void TryConnectElm(int count)
+    private bool TryConnectElm(int count)
     {
         while (count > 0)
         {
@@ -95,11 +103,13 @@ public class ObdService : BackgroundService
                 if (count == 0)
                 {
                     _logger.LogError(ex, "Unable to initialize ELM327. Exiting");
-                    throw;
+                    return false;
                 }
                 
                 _logger.LogError("Unable to initialize ELM327. Retrying {Count} times", count);
             }
         }
+
+        return true;
     }
 }
