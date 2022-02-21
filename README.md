@@ -66,6 +66,7 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 - .NET 6 SDK
 - NodeJs
 - ReactJs
+- Git
 
 ### Hardware
 
@@ -79,6 +80,19 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 
 ## Run
 
+### Web part
+
 > docker-compose up -d
 
 Then open your browser at the following address: https://localhost
+
+### Raspberry Pi part
+
+```
+$ git clone https://github.com/Kiritsu/vroom-stats
+$ cd vroom-stats
+$ sudo docker build . -f docker/pi-obd/Dockerfile -t pi-obd:latest
+$ sudo docker run --restart always -e Obd__SerialPort=rfcomm1 pi-obd:latest
+```
+
+Replace rfcomm1 by your set-up serial port
