@@ -11,18 +11,21 @@ public class ObdService : BackgroundService
     private readonly ExtendedElm327 _device;
     private readonly ILogger<ObdService> _logger;
     private readonly IWsHandlerService _ws;
+    private readonly IHostApplicationLifetime _host;
 
-    public ObdService(ExtendedElm327 device, ILogger<ObdService> logger, IWsHandlerService ws)
+    public ObdService(ExtendedElm327 device, ILogger<ObdService> logger, IWsHandlerService ws, IHostApplicationLifetime host)
     {
         _device = device;
         _logger = logger;
         _ws = ws;
+        _host = host;
     }
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         if (!TryConnectElm(5))
         {
+            _host.StopApplication();
             return;
         }
         
@@ -31,6 +34,7 @@ public class ObdService : BackgroundService
 
         if (!await TryConnectWsAsync(5, vin.Vin))
         {
+            _host.StopApplication();
             return;
         }
 
