@@ -85,7 +85,11 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 
 ### Web part
 
-> docker-compose up -d
+```
+$ git clone https://github.com/Kiritsu/vroom-stats
+$ cd vroom-stats
+$ sudo docker-compose up -d
+```
 
 Then open your browser at the following address: https://localhost
 
