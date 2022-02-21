@@ -73,7 +73,7 @@ public class ObdService : BackgroundService
                     throw;
                 }
                 
-                _logger.LogError(ex, "Unable to connect to remote WebSocket server. Retrying {Count} times", count);
+                _logger.LogError("Unable to connect to remote WebSocket server. Retrying {Count} times", count);
             }
         }
     }
@@ -98,7 +98,7 @@ public class ObdService : BackgroundService
                     throw;
                 }
                 
-                _logger.LogError(ex, "Unable to initialize ELM327. Retrying {Count} times", count);
+                _logger.LogError("Unable to initialize ELM327. Retrying {Count} times", count);
             }
         }
     }
