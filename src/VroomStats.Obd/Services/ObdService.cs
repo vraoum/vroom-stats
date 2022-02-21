@@ -37,7 +37,7 @@ public class ObdService : BackgroundService
             _host.StopApplication();
             return;
         }
-
+        
         var fuelType = await _device.RequestDataAsync<FuelType>();
         var fuelStatus = await _device.RequestDataAsync<FuelSystemStatus>();
         
