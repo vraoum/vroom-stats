@@ -7,7 +7,7 @@ volumes:
 services:
   webapi:
     ports: 
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     environment:
       - Database__Host=local-mongo
       - ASPNETCORE_URLS=http://+:8080
@@ -19,7 +19,7 @@ services:
   local-mongo:
     image: mongo
     ports:
-     - "27017"
+     - "127.0.0.1:27017:27017"
     restart: always
     volumes:
      - db-volume:/data/db
