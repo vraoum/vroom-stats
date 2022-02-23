@@ -59,7 +59,7 @@ public class ObdService : BackgroundService
             }));
             
             // pull every 2000ms
-            await Task.Delay(2000, stoppingToken);
+            await Task.Delay(50, stoppingToken);
         }
     }
 
@@ -83,7 +83,7 @@ public class ObdService : BackgroundService
                     return false;
                 }
                 
-                _logger.LogError("Unable to connect to remote WebSocket server. Retrying {Count} times", count);
+                _logger.LogError(ex, "Unable to connect to remote WebSocket server. Retrying {Count} times", count);
             }
         }
 
