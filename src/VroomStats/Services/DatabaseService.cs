@@ -61,7 +61,7 @@ public class DatabaseService : IDatabaseService
 
             if (carData is null)
             {
-                await RegisterCarAsync(carId, new CarSettingsModel(new Dictionary<string, string>()));
+                await UnsafeRegisterCarAsync(carId, new CarSettingsModel(new Dictionary<string, string>()));
                 carData = await _collection
                     .Find(x => x.Id == carId)
                     .FirstAsync();
@@ -119,18 +119,23 @@ public class DatabaseService : IDatabaseService
         
         try
         {
-            if (await _collection.Find(x => x.Id == carId).AnyAsync())
-            {
-                return false;
-            }
-
-            await _collection.InsertOneAsync(new CarModel(carId, settings.Settings, new List<CarDataModel>()));
-            return true;
+            return await UnsafeRegisterCarAsync(carId, settings);
         }
         finally
         {
             _semaphore.Release();
         }
+    }
+
+    private async Task<bool> UnsafeRegisterCarAsync(string carId, CarSettingsModel settings)
+    {
+        if (await _collection.Find(x => x.Id == carId).AnyAsync())
+        {
+            return false;
+        }
+
+        await _collection.InsertOneAsync(new CarModel(carId, settings.Settings, new List<CarDataModel>()));
+        return true;
     }
     
     /// <inheritdoc cref="IDatabaseService.GetLatestDataAsync"/>
