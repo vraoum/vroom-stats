@@ -1,6 +1,6 @@
 # vroom-stats
 
-This projet aims to retrieve car engine stats and store them in a webserver to allow any user to know what happens in their car.
+This project aims to retrieve car engine stats and store them in a webserver to allow any user to know what happens in their car.
 
 ## Architecture
 
@@ -75,6 +75,9 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 
 ## Resources 
 
+- [Microsoft .NET IOT Documentation](https://docs.microsoft.com/en-us/dotnet/iot/)
+- [Windows COM Simulation](https://www.virtual-serial-port.org/)
+- [OBD Simulation](https://github.com/Ircama/ELM327-emulator)
 - [OBD.NET](https://github.com/DarthAffe/OBD.NET)
 - [OBD II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs)
 
@@ -82,7 +85,11 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 
 ### Web part
 
-> docker-compose up -d
+```
+$ git clone https://github.com/Kiritsu/vroom-stats
+$ cd vroom-stats
+$ sudo docker-compose up -d
+```
 
 Then open your browser at the following address: https://localhost
 
@@ -92,7 +99,7 @@ Then open your browser at the following address: https://localhost
 $ git clone https://github.com/Kiritsu/vroom-stats
 $ cd vroom-stats
 $ sudo docker build . -f docker/pi-obd/Dockerfile -t pi-obd:latest
-$ sudo docker run --restart always -e Obd__SerialPort=rfcomm1 pi-obd:latest
+$ sudo docker run --restart always -e Obd__SerialPort=rfcomm1 -e WebApi__Host=vroom.alnmrc.com -e WebApi__Port=443 pi-obd:latest
 ```
 
 Replace rfcomm1 by your set-up serial port

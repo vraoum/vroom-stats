@@ -13,14 +13,17 @@ namespace VroomStats.Controllers;
 public class CarsController : Controller
 {
     private readonly IDatabaseService _database;
+    private readonly ILogger<CarsController> _logger;
 
     /// <summary>
     /// Creates a new instance of the <see cref="CarsController"/>.
     /// </summary>
     /// <param name="database">Instance of <see cref="IDatabaseService"/>.</param>
-    public CarsController(IDatabaseService database)
+    /// <param name="logger">Instance of the <see cref="ILogger{CarsController}"/></param>
+    public CarsController(IDatabaseService database, ILogger<CarsController> logger)
     {
         _database = database;
+        _logger = logger;
     }
     
     /// <summary>
@@ -49,12 +52,15 @@ public class CarsController : Controller
 
         return BadRequest();
     }
-    
+
     /// <summary>
-    /// Registers a new car into the database.
+    /// Adds data to a specific car.
     /// </summary>
     /// <param name="carId">Id of the car.</param>
     /// <param name="carDataModel">Instance of a body model.</param>
+    /// <remarks>
+    /// It is an alternative of the WebSocket connection.
+    /// </remarks>
     [HttpPost("{carId}/data")]
     public async Task<IActionResult> AppendDataAsync(string carId, CarDataAppendModel carDataModel)
     {

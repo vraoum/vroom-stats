@@ -37,7 +37,15 @@ public class DatabaseService : IDatabaseService
 
         if (carData is null)
         {
-            throw new InvalidOperationException("Car not found.");
+            await RegisterCarAsync(carId, carId);
+            carData = await _collection
+                .Find(x => x.Id == carId)
+                .FirstAsync();
+
+            if (carData is null)
+            {
+                throw new InvalidOperationException("Car not found.");
+            }
         }
 
         carData.Data.Add(new CarDataModel(DateTimeOffset.Now, payload.Data));
