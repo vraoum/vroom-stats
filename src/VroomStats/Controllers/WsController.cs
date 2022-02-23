@@ -11,14 +11,17 @@ namespace VroomStats.Controllers;
 public class WsController : ControllerBase
 {
     private readonly IWsHandlerService _wsHandler;
+    private readonly ILogger<WsController> _logger;
 
     /// <summary>
     /// Creates a new instance of the <see cref="WsController"/>.
     /// </summary>
     /// <param name="wsHandler">Instance of <see cref="IWsHandlerService"/>.</param>
-    public WsController(IWsHandlerService wsHandler)
+    /// <param name="logger">Instance of the controller logger.</param>
+    public WsController(IWsHandlerService wsHandler, ILogger<WsController> logger)
     {
         _wsHandler = wsHandler;
+        _logger = logger;
     }
     
     /// <summary>
@@ -30,11 +33,13 @@ public class WsController : ControllerBase
     {
         if (HttpContext.WebSockets.IsWebSocketRequest)
         {
+            _logger.LogInformation("Handling a ws request");
             using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
             await _wsHandler.ListenAsync(carId, webSocket);
         }
         else
         {
+            _logger.LogCritical("Received a non-ws request on a ws controller");
             HttpContext.Response.StatusCode = 400;
         }
     }
