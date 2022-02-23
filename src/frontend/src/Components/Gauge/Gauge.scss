@@ -1,0 +1,74 @@
+.gauges {
+  position: relative;
+  margin: 20px;
+}
+
+.innerGauge {
+  width: 90%;
+  margin: auto;
+  height: 95%;
+  padding-top: 5%;
+}
+
+.outerGauge {
+  position: absolute;
+  width: 100%;
+  top:0;
+  left: 0;
+  z-index: -1;
+}
+
+.graduation {
+  position: absolute;
+  width: 50%;
+  background: black;
+  bottom: 0;
+  height: 2px;
+  transform-origin: right center;
+
+  .graduation-value {
+    position: absolute;
+    top: -.5rem;
+    left: -1rem;
+  }
+}
+
+.gauge {
+  position: relative;
+  border-radius: 50%/100% 100% 0 0;
+  overflow: hidden;
+
+  &:before {
+    content: "";
+    display: block;
+    padding-top: 50%;   /* ratio of 2:1*/
+  }
+
+  .mask {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    bottom: 0;
+    top: 10%;
+    background-color: #fff;
+    border-radius: 50%/100% 100% 0 0;
+  }
+
+  .percentage {
+    position:  absolute;
+    top: -1px;
+    left: -1px;
+    bottom: 0;
+    right: -1px;
+    transform-origin: bottom center;
+  }
+
+  .value {
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    text-align: center;
+    font-size: 1.5rem;
+  }
+}

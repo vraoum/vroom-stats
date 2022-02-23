@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import CarData from "./CarData/CarData";
+import CarSelection from "./CarSelection/CarSelection";
+import {Component} from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+    constructor() {
+        super();
+
+        this.selectCar = this.selectCar.bind(this)
+
+        this.state = {
+            data: {},
+            ws: null
+        };
+    }
+
+    selectCar(carId) {
+        if(this.state.ws) {
+            this.state.ws.close()
+        }
+
+        let ws = new WebSocket("wss://vroom.alnmrc.com/api/v1/ws/"+carId);
+
+        ws.onmessage = (message) => {
+            this.setState({data: message.Data});
+            console.log(message)
+        }
+
+        this.setState({ws: ws})
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <CarSelection selectFunction={this.selectCar}/>
+                <CarData/>
+            </div>
+        );
+    }
 }
-
-export default App;
