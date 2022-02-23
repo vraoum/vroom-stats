@@ -60,6 +60,7 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 ### Softwares (With Docker)
 
 - Docker & Docker Compose
+- [RFCOMM for BLE](https://github.com/Jakeler/ble-serial)
 
 ### Softwares (Without Docker)
 
@@ -67,6 +68,7 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 - NodeJs
 - ReactJs
 - Git
+- Python / pip
 
 ### Hardware
 
@@ -77,9 +79,13 @@ To send the information from the Raspberry to the Webserver, we will use a WIFI 
 
 - [Microsoft .NET IOT Documentation](https://docs.microsoft.com/en-us/dotnet/iot/)
 - [Windows COM Simulation](https://www.virtual-serial-port.org/)
+- [Windows COM Simulation 2](https://freevirtualserialports.com/)
 - [OBD Simulation](https://github.com/Ircama/ELM327-emulator)
+- [RFCOMM for BLE](https://github.com/Jakeler/ble-serial)
 - [OBD.NET](https://github.com/DarthAffe/OBD.NET)
 - [OBD II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs)
+
+Infinite thanks to the different resources that made the project possible.
 
 ## Run
 
