@@ -6,6 +6,8 @@ This projet aims to retrieve car engine stats and store them in a webserver to a
 
 The project is divided in multiple parts: 
 
+![Project Diagram](./docs/diagram.svg)
+
 ### OBD Module
 
 It is a Super Mini ELM327 V2.1 that supports Bluetooth.
@@ -18,34 +20,79 @@ The Raspberry will allow us to:
 
 It will also use LEDs, or a screen, to show a few things we will eventually chose.
 
-### Web app
+### Web API
 
-The webapp (.NET 6 Blazor) will consist of some webpages that summaries the stats about the different cars that connected to our IOT system. 
+The web API (.NET 6) will consist of an API with Rest and WebSocket endpoints to append and retrieve data of a car by a webapp or the Raspberry Pi on a car.
 
-To retrieve values from the car, there will be HTTP REST API Endpoints and also serve a Websocket server.
+#### API Endpoints
 
-The routes for the web API and the protocol used for the websocket part are still unknown.
+Get the latest known values for a specific car:
+- GET /api/v1/cars/{carId} 
 
-The different values gathered will be stored in a MongoDB server.
+Register a new car by its unique id:
+- POST /api/v1/cars/{carId}
 
-### LTE Module
+Append new values for a specific car:
+- POST /api/v1/cars/{carId}/data
 
-To send the information from the Raspberry to the Webserver, we will use an LTE 4G module that will allow us to easily connect to the internet.
+Get all the known registered cars:
+- GET /api/v1/cars
+
+WebSocket connection to a specific car:
+- ws://webhost:webport/api/v1/ws/{carId}
+
+The different values gathered are stored in a MongoDB server.
+
+### Web App
+
+The web App, made with React, will consist of some pages, one with a list of all the registered cars, and then a complete summary of each car, with history and real-time data automatically updating the webpage.
+
+### Raspberry Pi App
+
+The app that will run on Raspberry, made with .NET 6, will allow us to easily interact with the stream of data received from the OBD and automatically send everything to the remote web API.
+
+### Wifi Module
+
+To send the information from the Raspberry to the Webserver, we will use a WIFI to easily connect to the internet.
 
 ## Requirements
 
-### Software
+### Softwares (With Docker)
+
+- Docker & Docker Compose
+
+### Softwares (Without Docker)
 
 - .NET 6 SDK
-- Docker & Docker Compose
+- NodeJs
+- ReactJs
+- Git
 
 ### Hardware
 
-- Raspberry Pi 4
+- Raspberry Pi 4 (with Wifi and Bluetooth)
 - Super Mini ELM327
-- SIMCOM SIM7600G-H 4G LTE
 
 ## Resources 
 
 - [OBD.NET](https://github.com/DarthAffe/OBD.NET)
 - [OBD II PIDs](https://en.wikipedia.org/wiki/OBD-II_PIDs)
+
+## Run
+
+### Web part
+
+> docker-compose up -d
+
+Then open your browser at the following address: https://localhost
+
+### Raspberry Pi part
+
+```
+$ git clone https://github.com/Kiritsu/vroom-stats
+$ cd vroom-stats
+$ sudo docker build . -f docker/pi-obd/Dockerfile -t pi-obd:latest
+$ sudo docker run --restart always -e Obd__SerialPort=rfcomm1 pi-obd:latest
+```
+
+Replace rfcomm1 by your set-up serial port
