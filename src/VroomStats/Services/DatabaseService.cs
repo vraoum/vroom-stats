@@ -34,13 +34,18 @@ public class DatabaseService : IDatabaseService
     }
     
     /// <inheritdoc cref="IDatabaseService.GetCarAsync"/>
-    public async Task<CarModel?> GetCarAsync(string carId)
+    public async Task<CarModel?> GetCarAsync(string carId, int amount)
     {
         var carData = await _collection
             .Find(x => x.Id == carId)
             .FirstOrDefaultAsync();
 
-        return carData;
+        if (carData is null)
+        {
+            return null;
+        }
+
+        return new CarModel(carData.Id, carData.Settings, carData.Data.Take(amount).ToList());
     }
     
     /// <inheritdoc cref="IDatabaseService.AppendDataAsync"/>

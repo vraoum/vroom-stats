@@ -46,10 +46,16 @@ public class CarsController : Controller
     /// Gets the entire known things about a car.
     /// </summary>
     /// <param name="carId">Id of the car.</param>
+    /// <param name="amount">Amount of data to return.</param>
     [HttpGet("{carId}")]
-    public async Task<IActionResult> GetCarAsync(string carId)
+    public async Task<IActionResult> GetCarAsync(string carId, [FromQuery(Name = "count")] int amount = 500)
     {
-        var data = await _database.GetCarAsync(carId);
+        if (amount > short.MaxValue)
+        {
+            amount = short.MaxValue;
+        }
+        
+        var data = await _database.GetCarAsync(carId, amount);
         if (data is null)
         {
             return BadRequest();

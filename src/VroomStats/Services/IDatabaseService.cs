@@ -18,8 +18,9 @@ public interface IDatabaseService
     /// Gets everything known about a car.
     /// </summary>
     /// <param name="carId">Id of the car.</param>
+    /// <param name="amount">Amount of data to return.</param>
     /// <returns>Returns a nullable model depending on if the car exists or not.</returns>
-    Task<CarModel?> GetCarAsync(string carId);
+    Task<CarModel?> GetCarAsync(string carId, int amount);
     
     /// <summary>
     /// Creates a new car from its id and optional settings.
