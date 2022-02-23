@@ -41,16 +41,33 @@ public class CarsController : Controller
     /// Registers a new car into the database.
     /// </summary>
     /// <param name="carId">Id of the car.</param>
-    /// <param name="carCreateModel">Instance of a body model.</param>
+    /// <param name="carSettingsModel">Instance of a body model.</param>
     [HttpPost("{carId}")]
-    public async Task<IActionResult> RegisterCarAsync(string carId, CarCreateModel carCreateModel)
+    public async Task<IActionResult> RegisterCarAsync(string carId, CarSettingsModel carSettingsModel)
     {
-        if (await _database.RegisterCarAsync(carId, carCreateModel.DisplayName))
+        if (await _database.RegisterCarAsync(carId, carSettingsModel))
         {
             return NoContent();
         }
 
         return BadRequest();
+    }
+    
+    /// <summary>
+    /// Registers a new car into the database.
+    /// </summary>
+    /// <param name="carId">Id of the car.</param>
+    /// <param name="carSettingsModel">Instance of a body model.</param>
+    [HttpPut("{carId}")]
+    public async Task<IActionResult> EditSettingsAsync(string carId, CarSettingsModel carSettingsModel)
+    {
+        var carData = await _database.UpdateSettingsAsync(carId, carSettingsModel);
+        if (carData is null)
+        {
+            return BadRequest();
+        }
+        
+        return Json(carData);
     }
 
     /// <summary>

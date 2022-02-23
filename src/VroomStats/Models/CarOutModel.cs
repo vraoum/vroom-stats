@@ -1,3 +1,3 @@
 ﻿namespace VroomStats.Models;
 
-public record CarOutModel(string Id, string DisplayName);
+public record CarOutModel(string Id, Dictionary<string, string> Settings);

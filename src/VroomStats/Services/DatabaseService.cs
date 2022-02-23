@@ -18,7 +18,7 @@ public class DatabaseService : IDatabaseService
     {
         var cars = await _collection
             .Find(new BsonDocument())
-            .Project(x => new CarOutModel(x.Id, x.DisplayName))
+            .Project(x => new CarOutModel(x.Id, x.Settings))
             .ToListAsync();
 
         if (cars is null)
@@ -37,7 +37,7 @@ public class DatabaseService : IDatabaseService
 
         if (carData is null)
         {
-            await RegisterCarAsync(carId, carId);
+            await RegisterCarAsync(carId, new CarSettingsModel(new Dictionary<string, string>()));
             carData = await _collection
                 .Find(x => x.Id == carId)
                 .FirstAsync();
@@ -52,14 +52,35 @@ public class DatabaseService : IDatabaseService
         await _collection.ReplaceOneAsync(x => x.Id == carId, carData);
     }
 
-    public async Task<bool> RegisterCarAsync(string carId, string displayName)
+    public async Task<CarOutModel?> UpdateSettingsAsync(string carId, CarSettingsModel settings)
+    {
+        var carData = await _collection
+            .Find(x => x.Id == carId)
+            .FirstOrDefaultAsync();
+
+        if (carData is null)
+        {
+            return null;
+        }
+
+        carData.Settings.Clear();
+        foreach (var (key, value) in settings.Settings)
+        {
+            carData.Settings.Add(key, value);
+        }
+        
+        await _collection.ReplaceOneAsync(x => x.Id == carId, carData);
+        return new CarOutModel(carData.Id, carData.Settings);
+    }
+
+    public async Task<bool> RegisterCarAsync(string carId, CarSettingsModel settings)
     {
         if (await _collection.Find(x => x.Id == carId).AnyAsync())
         {
             return false;
         }
 
-        await _collection.InsertOneAsync(new CarModel(carId, displayName, new List<CarDataModel>()));
+        await _collection.InsertOneAsync(new CarModel(carId, settings.Settings, new List<CarDataModel>()));
         return true;
     }
 
