@@ -5,6 +5,7 @@ using VroomStats.Payloads;
 
 namespace VroomStats.Services;
 
+/// <inheritdoc cref="IDatabaseService"/>
 public class DatabaseService : IDatabaseService
 {
     private readonly IMongoCollection<CarModel> _collection;
@@ -14,6 +15,7 @@ public class DatabaseService : IDatabaseService
         _collection = database.GetCollection<CarModel>("car-data");
     }
 
+    /// <inheritdoc cref="IDatabaseService.GetCarsAsync"/>
     public async Task<IReadOnlyCollection<CarOutModel>> GetCarsAsync()
     {
         var cars = await _collection
@@ -28,7 +30,8 @@ public class DatabaseService : IDatabaseService
 
         return cars.AsReadOnly();
     }
-
+    
+    /// <inheritdoc cref="IDatabaseService.AppendDataAsync"/>
     public async Task AppendDataAsync(string carId, BasePayload payload)
     {
         var carData = await _collection
@@ -52,6 +55,7 @@ public class DatabaseService : IDatabaseService
         await _collection.ReplaceOneAsync(x => x.Id == carId, carData);
     }
 
+    /// <inheritdoc cref="IDatabaseService.UpdateSettingsAsync"/>
     public async Task<CarOutModel?> UpdateSettingsAsync(string carId, CarSettingsModel settings)
     {
         var carData = await _collection
@@ -72,7 +76,8 @@ public class DatabaseService : IDatabaseService
         await _collection.ReplaceOneAsync(x => x.Id == carId, carData);
         return new CarOutModel(carData.Id, carData.Settings);
     }
-
+    
+    /// <inheritdoc cref="IDatabaseService.RegisterCarAsync"/>
     public async Task<bool> RegisterCarAsync(string carId, CarSettingsModel settings)
     {
         if (await _collection.Find(x => x.Id == carId).AnyAsync())
@@ -83,7 +88,8 @@ public class DatabaseService : IDatabaseService
         await _collection.InsertOneAsync(new CarModel(carId, settings.Settings, new List<CarDataModel>()));
         return true;
     }
-
+    
+    /// <inheritdoc cref="IDatabaseService.GetLatestDataAsync"/>
     public async Task<CarDataModel?> GetLatestDataAsync(string carId)
     {
         var carData = await _collection

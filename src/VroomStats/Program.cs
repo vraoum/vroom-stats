@@ -10,7 +10,7 @@ builder.Host.UseSerilog((x, y) => y
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .WriteTo.Conditional(
-        logEvent => x.HostingEnvironment.IsProduction(),
+        _ => x.HostingEnvironment.IsProduction(),
         logConfig => logConfig.File(@"./logs/", retainedFileCountLimit: 31, rollingInterval: RollingInterval.Day, outputTemplate: loggerTemplate))
     .WriteTo.Console(outputTemplate: loggerTemplate));
 
@@ -27,7 +27,6 @@ builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
 var app = builder.Build();
 
 app.UseCors();
-
 app.UseWebSockets();
 app.UseSwagger();
 app.UseSwaggerUI();
