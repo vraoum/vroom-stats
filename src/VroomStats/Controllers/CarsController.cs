@@ -34,6 +34,11 @@ public class CarsController : Controller
     public async Task<IActionResult> GetLatestDataAsync(string carId)
     {
         var data = await _database.GetLatestDataAsync(carId);
+        if (data is null)
+        {
+            return BadRequest();
+        }
+        
         return Json(data);
     }
 

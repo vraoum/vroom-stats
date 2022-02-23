@@ -8,6 +8,6 @@ public interface IDatabaseService
     Task<IReadOnlyCollection<CarOutModel>> GetCarsAsync();
     Task<bool> RegisterCarAsync(string carId, CarSettingsModel settings);
     Task<CarOutModel?> UpdateSettingsAsync(string carId, CarSettingsModel settings);
-    Task<CarDataModel> GetLatestDataAsync(string carId);
+    Task<CarDataModel?> GetLatestDataAsync(string carId);
     Task AppendDataAsync(string carId, BasePayload payload);
 }

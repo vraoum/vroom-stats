@@ -84,11 +84,16 @@ public class DatabaseService : IDatabaseService
         return true;
     }
 
-    public async Task<CarDataModel> GetLatestDataAsync(string carId)
+    public async Task<CarDataModel?> GetLatestDataAsync(string carId)
     {
         var carData = await _collection
             .Find(x => x.Id == carId)
-            .FirstAsync();
+            .FirstOrDefaultAsync();
+
+        if (carData is null)
+        {
+            return null;
+        }
 
         var last = carData.Data.LastOrDefault();
         if (last is null)
