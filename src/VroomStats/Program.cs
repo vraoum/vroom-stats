@@ -12,10 +12,11 @@ builder.Host.UseSerilog((x, y) => y
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .WriteTo.Conditional(
-        logEvent => x.HostingEnvironment.IsProduction(), 
+        logEvent => x.HostingEnvironment.IsProduction(),
         logConfig => logConfig.File(@"./logs/", retainedFileCountLimit: 31, rollingInterval: RollingInterval.Day, outputTemplate: loggerTemplate))
     .WriteTo.Console(outputTemplate: loggerTemplate));
 
+builder.Services.AddCors(x => x.AddDefaultPolicy(pBuilder => pBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -26,6 +27,8 @@ builder.Services.AddSingleton(x => x.GetRequiredService<MongoClient>().GetDataba
 builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
 
 var app = builder.Build();
+
+app.UseCors();
 
 app.UseWebSockets();
 app.UseSwagger();
