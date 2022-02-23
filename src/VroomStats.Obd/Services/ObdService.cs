@@ -58,8 +58,8 @@ public class ObdService : BackgroundService
                 ["rpm"] = rpm.Rpm.Value.ToString(CultureInfo.InvariantCulture)
             }));
             
-            // pull every 2000ms
-            await Task.Delay(50, stoppingToken);
+            // pull every 200ms
+            await Task.Delay(200, stoppingToken);
         }
     }
 
