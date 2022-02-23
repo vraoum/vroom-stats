@@ -13,6 +13,13 @@ public interface IDatabaseService
     /// </summary>
     /// <returns>Returns a collection of cars.</returns>
     Task<IReadOnlyCollection<CarOutModel>> GetCarsAsync();
+
+    /// <summary>
+    /// Gets everything known about a car.
+    /// </summary>
+    /// <param name="carId">Id of the car.</param>
+    /// <returns>Returns a nullable model depending on if the car exists or not.</returns>
+    Task<CarModel?> GetCarAsync(string carId);
     
     /// <summary>
     /// Creates a new car from its id and optional settings.

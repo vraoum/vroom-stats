@@ -30,10 +30,26 @@ public class CarsController : Controller
     /// Gets the latest data for a specific car.
     /// </summary>
     /// <param name="carId">Id of the car.</param>
-    [HttpGet("{carId}")]
+    [HttpGet("{carId}/data")]
     public async Task<IActionResult> GetLatestDataAsync(string carId)
     {
         var data = await _database.GetLatestDataAsync(carId);
+        if (data is null)
+        {
+            return BadRequest();
+        }
+        
+        return Json(data);
+    }
+    
+    /// <summary>
+    /// Gets the entire known things about a car.
+    /// </summary>
+    /// <param name="carId">Id of the car.</param>
+    [HttpGet("{carId}")]
+    public async Task<IActionResult> GetCarAsync(string carId)
+    {
+        var data = await _database.GetCarAsync(carId);
         if (data is null)
         {
             return BadRequest();

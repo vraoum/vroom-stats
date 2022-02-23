@@ -31,6 +31,16 @@ public class DatabaseService : IDatabaseService
         return cars.AsReadOnly();
     }
     
+    /// <inheritdoc cref="IDatabaseService.GetCarAsync"/>
+    public async Task<CarModel?> GetCarAsync(string carId)
+    {
+        var carData = await _collection
+            .Find(x => x.Id == carId)
+            .FirstOrDefaultAsync();
+
+        return carData;
+    }
+    
     /// <inheritdoc cref="IDatabaseService.AppendDataAsync"/>
     public async Task AppendDataAsync(string carId, BasePayload payload)
     {
