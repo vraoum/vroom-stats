@@ -99,7 +99,7 @@ Then open your browser at the following address: https://localhost
 $ git clone https://github.com/Kiritsu/vroom-stats
 $ cd vroom-stats
 $ sudo docker build . -f docker/pi-obd/Dockerfile -t pi-obd:latest
-$ sudo docker run --restart always -e Obd__SerialPort=rfcomm1 -e WebApi__Host=vroom.alnmrc.com -e WebApi__Port=443 pi-obd:latest
+$ sudo docker run --restart always -e Obd__SerialPort=/dev/pts/5 -v /dev/pts:/dev/pts pi-obd:latest
 ```
 
-Replace rfcomm1 by your set-up serial port
+Replace `/dev/pts/5` by your set-up serial port. Adjust the volume if the serial location is different.
