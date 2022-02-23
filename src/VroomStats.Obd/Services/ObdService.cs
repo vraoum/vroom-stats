@@ -20,7 +20,7 @@ public class ObdService : BackgroundService
         _ws = ws;
         _host = host;
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         if (!TryConnectElm(5))
@@ -28,7 +28,7 @@ public class ObdService : BackgroundService
             _host.StopApplication();
             return;
         }
-        
+
         var vin = await _device.RequestVinAsync();
         _logger.LogInformation("Vehicle VIN: {Vin}", vin);
 
@@ -37,29 +37,36 @@ public class ObdService : BackgroundService
             _host.StopApplication();
             return;
         }
-        
+
         var fuelType = await _device.RequestDataAsync<FuelType>();
-        var fuelStatus = await _device.RequestDataAsync<FuelSystemStatus>();
-        
-        _logger.LogInformation("Fuel type: {Type}; Status 1: {Status1}; Status 2: {Status2}", 
-            fuelType, fuelStatus.StatusSystem1, fuelStatus.StatusSystem2);
+
+        _logger.LogInformation("Fuel type: {Type}", fuelType);
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            var speed = await _device.RequestDataAsync<VehicleSpeed>();
-            var rpm = await _device.RequestDataAsync<EngineRPM>();
-            
-            _logger.LogInformation("Car speed: {Speed}; Rpm: {Rpm}", 
-                speed, rpm);
-
-            await _ws.SendPayloadAsync(new BasePayload(OpCode.Data, new Dictionary<string, string>
+            try
             {
-                ["speed"] = speed.Speed.Value.ToString(CultureInfo.InvariantCulture),
-                ["rpm"] = rpm.Rpm.Value.ToString(CultureInfo.InvariantCulture)
-            }));
-            
-            // pull every 2000ms
-            await Task.Delay(2000, stoppingToken);
+                var speed = await _device.RequestDataAsync<VehicleSpeed>();
+                var rpm = await _device.RequestDataAsync<EngineRPM>();
+
+                _logger.LogInformation("Car speed: {Speed}; Rpm: {Rpm}",
+                    speed, rpm);
+
+                await _ws.SendPayloadAsync(new BasePayload(OpCode.Data, new Dictionary<string, string>
+                {
+                    ["speed"] = speed.Speed.Value.ToString(CultureInfo.InvariantCulture),
+                    ["rpm"] = rpm.Rpm.Value.ToString(CultureInfo.InvariantCulture)
+                }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occured when trying to either retrieve OBD values or send them through websockets");
+            }
+            finally
+            {
+                // pull every 200ms
+                await Task.Delay(200, stoppingToken);
+            }
         }
     }
 
@@ -76,20 +83,20 @@ public class ObdService : BackgroundService
             catch (Exception ex)
             {
                 count--;
-                
+
                 if (count == 0)
                 {
                     _logger.LogError(ex, "Unable to connect to remote WebSocket server. Exiting");
                     return false;
                 }
-                
-                _logger.LogError("Unable to connect to remote WebSocket server. Retrying {Count} times", count);
+
+                _logger.LogError(ex, "Unable to connect to remote WebSocket server. Retrying {Count} times", count);
             }
         }
 
         return true;
     }
-    
+
     private bool TryConnectElm(int count)
     {
         while (count > 0)
@@ -103,13 +110,13 @@ public class ObdService : BackgroundService
             catch (Exception ex)
             {
                 count--;
-                
+
                 if (count == 0)
                 {
                     _logger.LogError(ex, "Unable to initialize ELM327. Exiting");
                     return false;
                 }
-                
+
                 _logger.LogError("Unable to initialize ELM327. Retrying {Count} times", count);
             }
         }

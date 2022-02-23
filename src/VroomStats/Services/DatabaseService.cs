@@ -33,7 +33,7 @@ public class DatabaseService : IDatabaseService
     {
         var carData = await _collection
             .Find(x => x.Id == carId)
-            .FirstAsync();
+            .FirstOrDefaultAsync();
 
         if (carData is null)
         {
