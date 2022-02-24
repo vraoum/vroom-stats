@@ -5,15 +5,16 @@ export default class Gauge extends Component {
     render() {
         let graduations = [];
         if(this.props.ringGraduateInterval) {
-            if(!this.props.ringGraduateDisplayFunction) {
-                this.props.ringGraduateDisplayFunction = (i) => i;
+            let ringGraduateDisplayFunction = (i) => i;
+            if(this.props.ringGraduateDisplayFunction) {
+                ringGraduateDisplayFunction = this.props.ringGraduateDisplayFunction;
             }
             for(let i = 1 ; i <= this.props.ringMax / this.props.ringGraduateInterval ; i++) {
                 let rotation = i * this.props.ringGraduateInterval * 180 / this.props.ringMax;
                 graduations.push(
                     <div className="graduation" key={i} style={{rotate: rotation + "deg"}}>
                         <div className="graduation-value" style={{rotate: -rotation + "deg"}}>
-                            {this.props.ringGraduateDisplayFunction(i * this.props.ringGraduateInterval)}
+                            {ringGraduateDisplayFunction(i * this.props.ringGraduateInterval)}
                         </div>
                     </div>
                 )
