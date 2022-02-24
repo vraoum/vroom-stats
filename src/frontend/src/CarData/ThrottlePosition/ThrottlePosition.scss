@@ -1,0 +1,14 @@
+.throttlePosition {
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid black;
+  width: 50px;
+  height: 100%;
+
+  .throttleValue {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+}
