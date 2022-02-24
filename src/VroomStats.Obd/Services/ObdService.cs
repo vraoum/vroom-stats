@@ -25,6 +25,7 @@ public class ObdService : BackgroundService
     {
         if (!TryConnectElm(5))
         {
+            _logger.LogCritical("Couldn't connect to the ELM");
             _host.StopApplication();
             return;
         }
@@ -34,6 +35,7 @@ public class ObdService : BackgroundService
 
         if (!await TryConnectWsAsync(5, vin.Vin))
         {
+            _logger.LogCritical("Couldn't connect to the websocket server");
             _host.StopApplication();
             return;
         }
@@ -68,6 +70,8 @@ public class ObdService : BackgroundService
                     ["engineOilTemperature"] = engineOilTemperature?.Temperature.Value.ToString(CultureInfo.InvariantCulture),
                     ["odometer"] = odometer?.Odom.Value.ToString(CultureInfo.InvariantCulture)
                 }));
+                
+                _logger.LogDebug("PLD sent!");
             }
             catch (Exception ex)
             {
@@ -85,10 +89,16 @@ public class ObdService : BackgroundService
     {
         while (count > 0)
         {
+            _logger.LogInformation("WS connection attempt {Count} in 5 secs", count);
+
             try
             {
                 await Task.Delay(5000);
+                
+                _logger.LogInformation("WS connection attempt {Count}", count);
                 await _ws.ConnectAsync(vin);
+                _logger.LogInformation("WS connection attempt {Count}: OK", count);
+                
                 break;
             }
             catch (Exception ex)

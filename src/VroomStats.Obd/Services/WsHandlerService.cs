@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using VroomStats.Extensions;
 using VroomStats.Payloads;
@@ -12,21 +13,31 @@ public class WsHandlerService : IWsHandlerService
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<WsHandlerService> _logger;
-    private readonly ClientWebSocket _webSocket;
+    private readonly IServiceProvider _services;
+    
+    private ClientWebSocket _webSocket;
 
-    public WsHandlerService(IConfiguration configuration, ILogger<WsHandlerService> logger, ClientWebSocket webSocket)
+    public WsHandlerService(IConfiguration configuration, ILogger<WsHandlerService> logger, IServiceProvider services, ClientWebSocket webSocket)
     {
         _configuration = configuration;
         _logger = logger;
+        _services = services;
         _webSocket = webSocket;
     }
 
     public async Task ConnectAsync(string carId)
     {
+        _webSocket = _services.GetRequiredService<ClientWebSocket>();
+        
+        var uri =
+            $"ws{(_configuration["WebApi:UseSSL"] == "true" ? "s" : "")}://{_configuration["WebApi:Host"]}:{_configuration["WebApi:Port"]}/api/v1/ws/{carId}";
+        
+        _logger.LogInformation("Connecting to {Uri}", uri);
         await _webSocket.ConnectAsync(
-            new Uri($"ws{(_configuration["WebApi:UseSSL"] == "true" ? "s" : "")}://{_configuration["WebApi:Host"]}:{_configuration["WebApi:Port"]}/api/v1/ws/{carId}"),
+            new Uri(uri),
             CancellationToken.None);
-
+        _logger.LogInformation("Done");
+        
         _ = ListenAsync();
     }
 
