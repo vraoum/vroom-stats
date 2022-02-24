@@ -30,10 +30,37 @@ public class CarsController : Controller
     /// Gets the latest data for a specific car.
     /// </summary>
     /// <param name="carId">Id of the car.</param>
-    [HttpGet("{carId}")]
+    [HttpGet("{carId}/data")]
     public async Task<IActionResult> GetLatestDataAsync(string carId)
     {
         var data = await _database.GetLatestDataAsync(carId);
+        if (data is null)
+        {
+            return BadRequest();
+        }
+        
+        return Json(data);
+    }
+    
+    /// <summary>
+    /// Gets the entire known things about a car.
+    /// </summary>
+    /// <param name="carId">Id of the car.</param>
+    /// <param name="amount">Amount of data to return.</param>
+    [HttpGet("{carId}")]
+    public async Task<IActionResult> GetCarAsync(string carId, [FromQuery(Name = "count")] int amount = 500)
+    {
+        if (amount > short.MaxValue)
+        {
+            amount = short.MaxValue;
+        }
+        
+        var data = await _database.GetCarAsync(carId, amount);
+        if (data is null)
+        {
+            return BadRequest();
+        }
+        
         return Json(data);
     }
 
@@ -41,16 +68,33 @@ public class CarsController : Controller
     /// Registers a new car into the database.
     /// </summary>
     /// <param name="carId">Id of the car.</param>
-    /// <param name="carCreateModel">Instance of a body model.</param>
+    /// <param name="carSettingsModel">Instance of a body model.</param>
     [HttpPost("{carId}")]
-    public async Task<IActionResult> RegisterCarAsync(string carId, CarCreateModel carCreateModel)
+    public async Task<IActionResult> RegisterCarAsync(string carId, CarSettingsModel carSettingsModel)
     {
-        if (await _database.RegisterCarAsync(carId, carCreateModel.DisplayName))
+        if (await _database.RegisterCarAsync(carId, carSettingsModel))
         {
             return NoContent();
         }
 
         return BadRequest();
+    }
+
+    /// <summary>
+    /// Adds data to a specific car.
+    /// </summary>
+    /// <param name="carId">Id of the car.</param>
+    /// <param name="carSettingsModel">Instance of a body model.</param>
+    [HttpPut("{carId}")]
+    public async Task<IActionResult> EditSettingsAsync(string carId, CarSettingsModel carSettingsModel)
+    {
+        var carData = await _database.UpdateSettingsAsync(carId, carSettingsModel);
+        if (carData is null)
+        {
+            return BadRequest();
+        }
+        
+        return Json(carData);
     }
 
     /// <summary>
