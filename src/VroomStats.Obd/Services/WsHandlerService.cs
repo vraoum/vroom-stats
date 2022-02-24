@@ -29,15 +29,11 @@ public class WsHandlerService : IWsHandlerService
     {
         _webSocket = _services.GetRequiredService<ClientWebSocket>();
         
-        var uri =
-            $"ws{(_configuration["WebApi:UseSSL"] == "true" ? "s" : "")}://{_configuration["WebApi:Host"]}:{_configuration["WebApi:Port"]}/api/v1/ws/{carId}";
+        var uri = $"ws{(_configuration["WebApi:UseSSL"] == "true" ? "s" : "")}://{_configuration["WebApi:Host"]}:{_configuration["WebApi:Port"]}/api/v1/ws/{carId}";
         
         _logger.LogInformation("Connecting to {Uri}", uri);
-        await _webSocket.ConnectAsync(
-            new Uri(uri),
-            CancellationToken.None);
-        _logger.LogInformation("Done");
-        
+        await _webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
+
         _ = ListenAsync();
     }
 

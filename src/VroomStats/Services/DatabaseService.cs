@@ -153,7 +153,7 @@ public class DatabaseService : IDatabaseService
         var last = carData.Data.LastOrDefault();
         if (last is null)
         {
-            return new CarDataModel(DateTimeOffset.Now, new Dictionary<string, string>());
+            return new CarDataModel(DateTimeOffset.Now, new Dictionary<string, string?>());
         }
 
         var model = new CarDataModel(last.PulledAt, last.Data);

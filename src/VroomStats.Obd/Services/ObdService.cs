@@ -23,7 +23,7 @@ public class ObdService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (!TryConnectElm(5))
+        if (!await TryConnectElmAsync(5, stoppingToken))
         {
             _logger.LogCritical("Couldn't connect to the ELM");
             _host.StopApplication();
@@ -33,31 +33,36 @@ public class ObdService : BackgroundService
         var vin = await _device.RequestVinAsync();
         _logger.LogInformation("Vehicle VIN: {Vin}", vin);
 
-        if (!await TryConnectWsAsync(5, vin.Vin))
+        if (!await TryConnectWsAsync(5, vin.Vin, stoppingToken))
         {
             _logger.LogCritical("Couldn't connect to the websocket server");
             _host.StopApplication();
             return;
         }
-
-        var fuelType = await _device.RequestDataAsync<FuelType>();
-
-        _logger.LogInformation("Fuel type: {Type}", fuelType);
-
+        
+        _logger.LogInformation("Start requesting data and sending payloads");
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
                 var speed = await _device.RequestDataAsync<VehicleSpeed>();
+                await Task.Delay(20, stoppingToken);
                 var rpm = await _device.RequestDataAsync<EngineRPM>();
+                await Task.Delay(20, stoppingToken);
                 var throttle = await _device.RequestDataAsync<ThrottlePosition>();
+                await Task.Delay(20, stoppingToken);
                 var runTime = await _device.RequestDataAsync<RunTimeSinceEngineStart>();
+                await Task.Delay(20, stoppingToken);
                 var fuel = await _device.RequestDataAsync<FuelTankLevelInput>();
+                await Task.Delay(20, stoppingToken);
                 var airTemperature = await _device.RequestDataAsync<IntakeAirTemperature>();
+                await Task.Delay(20, stoppingToken);
                 var ambientAirTemperature = await _device.RequestDataAsync<AmbientAirTemperature>();
+                await Task.Delay(20, stoppingToken);
                 var engineOilTemperature = await _device.RequestDataAsync<EngineOilTemperature>();
+                await Task.Delay(20, stoppingToken);
                 var odometer = await _device.RequestDataAsync<Odometer>();
-                
+
                 await _ws.SendPayloadAsync(new BasePayload(OpCode.Data, new Dictionary<string, string?>
                 {
                     ["speed"] = speed?.Speed.Value.ToString(CultureInfo.InvariantCulture),
@@ -70,8 +75,6 @@ public class ObdService : BackgroundService
                     ["engineOilTemperature"] = engineOilTemperature?.Temperature.Value.ToString(CultureInfo.InvariantCulture),
                     ["odometer"] = odometer?.Odom.Value.ToString(CultureInfo.InvariantCulture)
                 }));
-                
-                _logger.LogDebug("PLD sent!");
             }
             catch (Exception ex)
             {
@@ -79,26 +82,19 @@ public class ObdService : BackgroundService
             }
             finally
             {
-                // pull every 200ms
-                await Task.Delay(200, stoppingToken);
+                // wait 1 second before starting pulling again.
+                await Task.Delay(1000, stoppingToken);
             }
         }
     }
 
-    private async Task<bool> TryConnectWsAsync(int count, string vin)
+    private async Task<bool> TryConnectWsAsync(int count, string vin, CancellationToken token)
     {
         while (count > 0)
         {
-            _logger.LogInformation("WS connection attempt {Count} in 5 secs", count);
-
             try
             {
-                await Task.Delay(5000);
-                
-                _logger.LogInformation("WS connection attempt {Count}", count);
                 await _ws.ConnectAsync(vin);
-                _logger.LogInformation("WS connection attempt {Count}: OK", count);
-                
                 break;
             }
             catch (Exception ex)
@@ -113,18 +109,23 @@ public class ObdService : BackgroundService
 
                 _logger.LogError(ex, "Unable to connect to remote WebSocket server. Retrying {Count} times", count);
             }
+            finally
+            {
+                await Task.Delay(5000, token);
+            }
         }
 
+        _logger.LogInformation("Connected with the WebSocket");
         return true;
     }
 
-    private bool TryConnectElm(int count)
+    private async Task<bool> TryConnectElmAsync(int count, CancellationToken token)
     {
         while (count > 0)
         {
             try
             {
-                Thread.Sleep(5000);
+                // ReSharper disable once MethodHasAsyncOverload [Reason: Async Overload is not supported]
                 _device.Initialize();
                 break;
             }
@@ -140,8 +141,13 @@ public class ObdService : BackgroundService
 
                 _logger.LogError("Unable to initialize ELM327. Retrying {Count} times", count);
             }
+            finally
+            {
+                await Task.Delay(5000, token);
+            }
         }
 
+        _logger.LogInformation("Connected with the ELM327 device");
         return true;
     }
 }
