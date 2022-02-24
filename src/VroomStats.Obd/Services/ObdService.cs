@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OBD.NET.Common.OBDData;
@@ -12,17 +14,22 @@ public class ObdService : BackgroundService
     private readonly ILogger<ObdService> _logger;
     private readonly IWsHandlerService _ws;
     private readonly IHostApplicationLifetime _host;
+    private readonly IIoTService? _ioTService;
 
-    public ObdService(ExtendedElm327 device, ILogger<ObdService> logger, IWsHandlerService ws, IHostApplicationLifetime host)
+    public ObdService(ExtendedElm327 device, ILogger<ObdService> logger, 
+        IWsHandlerService ws, IHostApplicationLifetime host, IServiceProvider provider)
     {
         _device = device;
         _logger = logger;
         _ws = ws;
         _host = host;
+        _ioTService = provider.GetService<IIoTService>();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _ioTService?.Initialize();
+
         if (!await TryConnectElmAsync(5, stoppingToken))
         {
             _logger.LogCritical("Couldn't connect to the ELM");
@@ -75,6 +82,11 @@ public class ObdService : BackgroundService
                     ["engineOilTemperature"] = engineOilTemperature?.Temperature.Value.ToString(CultureInfo.InvariantCulture),
                     ["odometer"] = odometer?.Odom.Value.ToString(CultureInfo.InvariantCulture)
                 }));
+
+                if (rpm is not null)
+                {
+                    _ioTService?.UpdateLed(rpm.Rpm.Value);
+                }
             }
             catch (Exception ex)
             {
