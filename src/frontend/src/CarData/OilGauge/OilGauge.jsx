@@ -8,7 +8,7 @@ export default class OilGauge extends Component {
             <div className="oilGauge">
                 Oil Temperature
                 <Gauge
-                    value={this.props.data.speed}
+                    value={this.props.data.oilTemperature}
                     unit={"°C"}
                     ringColor={"linear-gradient(90deg, rgba(47,226,111,1) 0%, rgba(252,176,69,1) 30%, rgba(253,29,29,1) 100%)"}
                     ringValue={this.props.data.oilTemperature}

@@ -8,10 +8,10 @@ export default class ThrottlePosition extends Component {
                 Throttle
                 <div className={"throttlePosition"}>
                     <div className={"throttleValue"} style={{
-                        height: this.props.data.throttlePosition??0 + '%',
+                        height: (this.props.data.throttle??0) + '%',
                         background: '#8cef57'
                     }}>
-                        {this.props.data.throttlePosition}%
+                        {this.props.data.throttle}%
                     </div>
 
                 </div>

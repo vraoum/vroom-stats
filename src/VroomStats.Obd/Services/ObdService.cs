@@ -75,8 +75,6 @@ public class ObdService : BackgroundService
                     ["engineOilTemperature"] = engineOilTemperature?.Temperature.Value.ToString(CultureInfo.InvariantCulture),
                     ["odometer"] = odometer?.Odom.Value.ToString(CultureInfo.InvariantCulture)
                 }));
-                
-                _logger.LogDebug("PLD sent!");
             }
             catch (Exception ex)
             {

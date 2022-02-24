@@ -7,7 +7,7 @@ using Serilog;
 using Serilog.Events;
 using VroomStats.Obd.Services;
 
-var loggerTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+const string loggerTemplate = "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
 var builder = Host.CreateDefaultBuilder(args)
     .UseSerilog((x, y) => y
         .MinimumLevel.Debug()
