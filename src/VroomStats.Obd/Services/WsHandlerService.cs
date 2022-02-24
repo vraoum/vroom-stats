@@ -14,7 +14,7 @@ public class WsHandlerService : IWsHandlerService
     private readonly IConfiguration _configuration;
     private readonly ILogger<WsHandlerService> _logger;
     private readonly IServiceProvider _services;
-    
+
     private ClientWebSocket _webSocket;
 
     public WsHandlerService(IConfiguration configuration, ILogger<WsHandlerService> logger, IServiceProvider services, ClientWebSocket webSocket)
@@ -28,9 +28,9 @@ public class WsHandlerService : IWsHandlerService
     public async Task ConnectAsync(string carId)
     {
         _webSocket = _services.GetRequiredService<ClientWebSocket>();
-        
+
         var uri = $"ws{(_configuration["WebApi:UseSSL"] == "true" ? "s" : "")}://{_configuration["WebApi:Host"]}:{_configuration["WebApi:Port"]}/api/v1/ws/{carId}";
-        
+
         _logger.LogInformation("Connecting to {Uri}", uri);
         await _webSocket.ConnectAsync(new Uri(uri), CancellationToken.None);
 
