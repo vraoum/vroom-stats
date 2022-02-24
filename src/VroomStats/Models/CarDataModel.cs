@@ -5,4 +5,4 @@
 /// </summary>
 /// <param name="PulledAt">Date the data was pulled at.</param>
 /// <param name="Data">Data pulled.</param>
-public record CarDataModel(DateTimeOffset PulledAt, Dictionary<string, string> Data);
+public record CarDataModel(DateTimeOffset PulledAt, Dictionary<string, string?> Data);

@@ -48,14 +48,25 @@ public class ObdService : BackgroundService
             {
                 var speed = await _device.RequestDataAsync<VehicleSpeed>();
                 var rpm = await _device.RequestDataAsync<EngineRPM>();
-
-                _logger.LogInformation("Car speed: {Speed}; Rpm: {Rpm}",
-                    speed, rpm);
-
-                await _ws.SendPayloadAsync(new BasePayload(OpCode.Data, new Dictionary<string, string>
+                var throttle = await _device.RequestDataAsync<ThrottlePosition>();
+                var runTime = await _device.RequestDataAsync<RunTimeSinceEngineStart>();
+                var fuel = await _device.RequestDataAsync<FuelTankLevelInput>();
+                var airTemperature = await _device.RequestDataAsync<IntakeAirTemperature>();
+                var ambientAirTemperature = await _device.RequestDataAsync<AmbientAirTemperature>();
+                var engineOilTemperature = await _device.RequestDataAsync<EngineOilTemperature>();
+                var odometer = await _device.RequestDataAsync<Odometer>();
+                
+                await _ws.SendPayloadAsync(new BasePayload(OpCode.Data, new Dictionary<string, string?>
                 {
-                    ["speed"] = speed.Speed.Value.ToString(CultureInfo.InvariantCulture),
-                    ["rpm"] = rpm.Rpm.Value.ToString(CultureInfo.InvariantCulture)
+                    ["speed"] = speed?.Speed.Value.ToString(CultureInfo.InvariantCulture),
+                    ["rpm"] = rpm?.Rpm.Value.ToString(CultureInfo.InvariantCulture),
+                    ["throttle"] = throttle?.Position.Value.ToString(CultureInfo.InvariantCulture),
+                    ["fuel"] = fuel?.Level.Value.ToString(CultureInfo.InvariantCulture),
+                    ["runTime"] = TimeSpan.FromSeconds(runTime?.Runtime.Value ?? 0).ToString("g", CultureInfo.InvariantCulture),
+                    ["airTemperature"] = airTemperature?.Temperature.Value.ToString(CultureInfo.InvariantCulture),
+                    ["ambientAirTemperature"] = ambientAirTemperature?.Temperature.Value.ToString(CultureInfo.InvariantCulture),
+                    ["engineOilTemperature"] = engineOilTemperature?.Temperature.Value.ToString(CultureInfo.InvariantCulture),
+                    ["odometer"] = odometer?.Odom.Value.ToString(CultureInfo.InvariantCulture)
                 }));
             }
             catch (Exception ex)
