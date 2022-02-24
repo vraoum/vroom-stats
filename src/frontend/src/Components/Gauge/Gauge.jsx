@@ -12,8 +12,8 @@ export default class Gauge extends Component {
             for(let i = 1 ; i <= this.props.ringMax / this.props.ringGraduateInterval ; i++) {
                 let rotation = i * this.props.ringGraduateInterval * 180 / this.props.ringMax;
                 graduations.push(
-                    <div className="graduation" key={i} style={{rotate: rotation + "deg"}}>
-                        <div className="graduation-value" style={{rotate: -rotation + "deg"}}>
+                    <div className="graduation" key={i} style={{transform: 'rotate('+rotation + "deg)"}}>
+                        <div className="graduation-value" style={{transform: 'rotate('+ -rotation + "deg)"}}>
                             {ringGraduateDisplayFunction(i * this.props.ringGraduateInterval)}
                         </div>
                     </div>
@@ -29,7 +29,7 @@ export default class Gauge extends Component {
                             background: this.props.ringColor
                         }}>
                         <div className="percentage" style={{
-                            rotate: this.props.ringValue * 180 / this.props.ringMax + "deg",
+                            transform: 'rotate('+this.props.ringValue * 180 / this.props.ringMax + "deg)",
                             backgroundColor: this.props.ringOtherColor ?? '#fff'
                         }}/>
                         <div className="mask"/>
@@ -41,11 +41,11 @@ export default class Gauge extends Component {
                         backgroundColor: this.props.ringWarningColor ?? '#fff'
                     }}>
                         <div className="percentage" style={{
-                            rotate: (this.props.ringWarningEnd??0) * 180 / this.props.ringMax + "deg",
+                            transform: 'rotate('+ (this.props.ringWarningEnd??0) * 180 / this.props.ringMax + "deg)",
                             backgroundColor: '#fff'
                         }}/>
                         <div className="percentage" style={{
-                            rotate: (180 + (this.props.ringWarningStart??0) * 180 / this.props.ringMax) + "deg",
+                            transform: 'rotate('+ (180 + (this.props.ringWarningStart??0) * 180 / this.props.ringMax) + "deg)",
                             backgroundColor: '#fff'
                         }}/>
                         <div className="mask"/>
