@@ -7,10 +7,10 @@ export default class SpeedGauge extends Component {
         return (
             <div className="speedGauge">
                 <Gauge
-                    value={50}
+                    value={this.props.data.speed}
                     unit={"kmh"}
                     ringColor={"linear-gradient(90deg, rgba(47,226,111,1) 0%, rgba(252,176,69,1) 30%, rgba(253,29,29,1) 100%)"}
-                    ringValue={3500}
+                    ringValue={this.props.data.rpm}
                     ringMax={7000}
                     ringGraduateInterval={1000}
                     ringGraduateDisplayFunction={(val) => val/1000}

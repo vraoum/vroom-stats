@@ -1,0 +1,13 @@
+.message {
+  display: block;
+  margin: 10px auto;
+  padding: 0 20px;
+  border-radius: 5px;
+  clear: both;
+
+  .date {
+    &:after {
+      content: " - ";
+    }
+  }
+}

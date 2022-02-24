@@ -5,8 +5,9 @@ import SpeedGauge from "./SpeedGauge/SpeedGauge";
 export default class CarData extends Component {
     render() {
         return (
-            <div className="carData" style={{width: "400px"}}>
-                <SpeedGauge />
+            <div className="carData" style={{width: "400px", margin: "auto"}}>
+                <SpeedGauge data={this.props.data}/>
+
             </div>
         )
     }
