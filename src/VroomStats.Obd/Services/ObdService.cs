@@ -95,7 +95,7 @@ public class ObdService : BackgroundService
             finally
             {
                 // wait 500ms before starting pulling again.
-                await Task.Delay(500, stoppingToken);
+                await Task.Delay(100, stoppingToken);
             }
         }
     }
