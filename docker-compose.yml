@@ -16,6 +16,14 @@ services:
       dockerfile: ./docker/webapi/Dockerfile
     restart: always
 
+  front:
+    ports:
+      - "127.0.0.1:3000:3000"
+    build:
+      context: .
+      dockerfile: ./docker/front/Dockerfile
+    restart: always
+
   local-mongo:
     image: mongo
     ports:
