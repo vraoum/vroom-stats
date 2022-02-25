@@ -9,8 +9,8 @@ public class IoTService : IIoTService
     private readonly ILogger<IoTService> _logger;
 
     private const int RedLedPin = 18;
-    private const int GreenLedPin = 27;
-    private const int BlueLedPin = 22;
+    private const int GreenLedPin = 23;
+    private const int BlueLedPin = 24;
 
     public IoTService(GpioController controller, ILogger<IoTService> logger)
     {
@@ -33,7 +33,7 @@ public class IoTService : IIoTService
         switch (rpm)
         {
             case < 1500:
-                _logger.LogDebug("RED-BLUE");
+                _logger.LogDebug("GREEN");
                 _controller.Write(RedLedPin, PinValue.Low);
                 _controller.Write(GreenLedPin, PinValue.High);
                 _controller.Write(BlueLedPin, PinValue.Low);
