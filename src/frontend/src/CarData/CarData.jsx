@@ -8,7 +8,7 @@ export default class CarData extends Component {
     render() {
         return (
             <div className="carData">
-                <SpeedGauge data={this.props.data}/>
+                <SpeedGauge data={this.props.data} car={this.props.car}/>
                 <ThrottlePosition data={this.props.data} />
                 <OilGauge data={this.props.data} />
             </div>

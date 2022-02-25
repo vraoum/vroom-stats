@@ -12,6 +12,8 @@ export default class CarSelection extends Component {
         this.state = {
             showSettings: false,
             carTitle: this.props.car?.settings?.carTitle??'',
+            maxRpmStart: this.props.car?.settings?.maxRpmStart??'',
+            maxRpmEnd: this.props.car?.settings?.maxRpmEnd??'',
         }
 
         this.change = this.change.bind(this)
@@ -24,7 +26,9 @@ export default class CarSelection extends Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         if(prevProps.car !== this.props.car) {
             this.setState({
-                carTitle: this.props.car.settings.carTitle
+                carTitle: this.props.car.settings.carTitle,
+                maxRpmStart: this.props.car.settings.maxRpmStart,
+                maxRpmEnd: this.props.car.settings.maxRpmEnd
             })
         }
     }
@@ -61,7 +65,9 @@ export default class CarSelection extends Component {
         event.preventDefault()
         axios.put('https://vroom.alnmrc.com/api/v1/Cars/'+this.props.car.id,{
             settings: {
-                carTitle: this.state.carTitle
+                carTitle: this.state.carTitle,
+                maxRpmStart: this.state.maxRpmStart,
+                maxRpmEnd: this.state.maxRpmEnd
             }
         }).then(_ => {this.closeModal(); this.props.fetchFunction()})
     }
@@ -93,15 +99,33 @@ export default class CarSelection extends Component {
                             <Modal.Title>Modal heading</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                                <Form.Group className="mb-3" controlId="carTitle">
-                                    <Form.Label>Car title</Form.Label>
-                                    <Form.Control
-                                        placeholder="Short name of the car to retrieve it in the list"
-                                        name={"carTitle"}
-                                        value={this.state.carTitle}
-                                        onChange={this.handleInputChange}
-                                    />
-                                </Form.Group>
+                            <Form.Group className="mb-3" controlId="carTitle">
+                                <Form.Label>Car title</Form.Label>
+                                <Form.Control
+                                    placeholder="Short name of the car to retrieve it in the list"
+                                    name={"carTitle"}
+                                    value={this.state.carTitle}
+                                    onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="maxRpmStart">
+                                <Form.Label>Max rpm start warning</Form.Label>
+                                <Form.Control
+                                    placeholder="RPM warning start value"
+                                    name={"maxRpmStart"}
+                                    value={this.state.maxRpmStart}
+                                    onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="maxRpmEnd">
+                                <Form.Label>Max rpm</Form.Label>
+                                <Form.Control
+                                    placeholder="Maximum value for rpm"
+                                    name={"maxRpmEnd"}
+                                    value={this.state.maxRpmEnd}
+                                    onChange={this.handleInputChange}
+                                />
+                            </Form.Group>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.closeModal} type={"button"}>

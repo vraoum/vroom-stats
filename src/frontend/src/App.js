@@ -53,7 +53,7 @@ export default class App extends Component {
                 <Row>
                     <Col>
                         <CarSelection car={this.state.car} cars={this.state.cars} fetchFunction={this.fetchCars} selectFunction={this.selectCar}/>
-                        <CarData data={this.state.data} />
+                        <CarData data={this.state.data} car={this.state.car} />
                     </Col>
                     <Col>
                         <CommandHistory data={this.state.data} />
