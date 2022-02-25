@@ -21,9 +21,9 @@ public class IoTService : IIoTService
     public void Initialize()
     {
         _logger.LogDebug("Initializing pins");
-        _controller.OpenPin(RedLedPin);
-        _controller.OpenPin(GreenLedPin);
-        _controller.OpenPin(BlueLedPin);
+        _controller.OpenPin(RedLedPin, PinMode.Output);
+        _controller.OpenPin(GreenLedPin, PinMode.Output);
+        _controller.OpenPin(BlueLedPin, PinMode.Output);
         _logger.LogDebug("Pins initialized");
     }
     
