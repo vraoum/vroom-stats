@@ -32,14 +32,14 @@ public class IoTService : IIoTService
         _logger.LogDebug("Changing led value: {Rpm}", rpm);
         switch (rpm)
         {
-            case < 1500:
+            case < 2000:
                 _logger.LogDebug("GREEN");
                 _controller.Write(RedLedPin, PinValue.Low);
                 _controller.Write(GreenLedPin, PinValue.High);
                 _controller.Write(BlueLedPin, PinValue.Low);
                 _logger.LogDebug("DONE");
                 break;
-            case >= 1500 and < 2500:
+            case >= 2000 and < 3500:
                 _logger.LogDebug("RED-GREEN");
                 _controller.Write(RedLedPin, PinValue.High);
                 _controller.Write(GreenLedPin, PinValue.High);
