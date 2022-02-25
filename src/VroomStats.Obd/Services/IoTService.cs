@@ -8,7 +8,7 @@ public class IoTService : IIoTService
     private readonly GpioController _controller;
     private readonly ILogger<IoTService> _logger;
 
-    private const int RedLedPin = 17;
+    private const int RedLedPin = 18;
     private const int GreenLedPin = 27;
     private const int BlueLedPin = 22;
 
