@@ -53,21 +53,21 @@ public class ObdService : BackgroundService
             try
             {
                 var speed = await _device.RequestDataAsync<VehicleSpeed>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var rpm = await _device.RequestDataAsync<EngineRPM>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var throttle = await _device.RequestDataAsync<ThrottlePosition>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var runTime = await _device.RequestDataAsync<RunTimeSinceEngineStart>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var fuel = await _device.RequestDataAsync<FuelTankLevelInput>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var airTemperature = await _device.RequestDataAsync<IntakeAirTemperature>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var ambientAirTemperature = await _device.RequestDataAsync<AmbientAirTemperature>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var engineOilTemperature = await _device.RequestDataAsync<EngineOilTemperature>();
-                await Task.Delay(20, stoppingToken);
+                await Task.Delay(1, stoppingToken);
                 var odometer = await _device.RequestDataAsync<Odometer>();
 
                 await _ws.SendPayloadAsync(new BasePayload(OpCode.Data, new Dictionary<string, string?>
@@ -95,7 +95,7 @@ public class ObdService : BackgroundService
             finally
             {
                 // wait 1 second before starting pulling again.
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(50, stoppingToken);
             }
         }
     }
